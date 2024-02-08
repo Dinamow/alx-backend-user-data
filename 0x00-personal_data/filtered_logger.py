@@ -18,7 +18,46 @@ Example:
     # Output: 'User: john, password: ***, credit_card: **********'
 """
 import re
-from typing import List
+from typing import List, Tuple
+import logging
+
+
+class RedactingFormatter(logging.Formatter):
+    """ Redacting Formatter class
+        """
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    class RedactingFormatter(logging.Formatter):
+        """
+        Custom log formatter that redacts sensitive information.
+        """
+
+        def __init__(self, fields: Tuple[str, ...]):
+            """
+            Initialize the RedactingFormatter.
+
+            Args:
+                fildes (List[str]): List of sensitive fields to redact.
+            """
+            super(RedactingFormatter, self).__init__(self.FORMAT)
+            self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+            """
+            Formats the log record by filtering sensitive data.
+
+            Args:
+                record (logging.LogRecord): The log record to be formatted.
+
+            Returns:
+                str: The formatted log record.
+            """
+            record.msg = filter_datum(record.msg, self.REDACTION,
+                                      self.FORMAT, self.SEPARATOR)
+            return super(RedactingFormatter, self).format(record)
 
 
 def filter_datum(fields: List[str], redaction: str,
