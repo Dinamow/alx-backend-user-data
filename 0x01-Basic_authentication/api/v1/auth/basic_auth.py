@@ -4,9 +4,7 @@ from api.v1.auth.auth import Auth
 import base64
 from flask import request
 from typing import Tuple, TypeVar
-
-
-User = TypeVar('User')
+from models.user import User
 
 
 class BasicAuth(Auth):
@@ -44,12 +42,17 @@ class BasicAuth(Auth):
         return tuple(decoded_base64_authorization_header.split(':', 1))
 
     def user_object_from_credentials(self,
-                                     user_email: str, user_pwd: str) -> User:
+                                     user_email: str,
+                                     user_pwd: str) -> TypeVar('User'):
         """user object from credentials"""
         x = user_pwd is None or not isinstance(user_pwd, str)
         if user_email is None or not isinstance(user_email, str) or x:
             return None
         try:
-            return User.search({'email': user_email})[0]
+            users = User.search({'email': user_email})
         except Exception:
             return None
+        for user in users:
+            if user.is_valid_password(user_pwd):
+                return user
+        return None
