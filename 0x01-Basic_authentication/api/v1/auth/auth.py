@@ -11,17 +11,19 @@ class Auth:
     """Auth class"""
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """require_auth"""
-        if path is None or excluded_paths is None or len(excluded_paths) == 0:
+        if path is None or excluded_paths is None or not len(excluded_paths):
             return True
-        if path[-1] == '/':
-            return False
+        if path[-1] != '/':
+            path += '/'
         for p in excluded_paths:
             if p[-1] == '*':
                 last = p.find('*')
                 if path[:last] == p[:last]:
                     return False
-            if p[-1] == '/' and path == p[:-1]:
-                return False
+            if p[-1] != '/':
+                p += '/'
+            if path == p:
+                return False    
         return True
 
     def authorization_header(self, request=None) -> str:
