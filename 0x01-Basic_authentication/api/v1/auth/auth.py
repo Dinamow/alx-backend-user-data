@@ -17,7 +17,6 @@ class Auth:
             return False
         for p in excluded_paths:
             if p[:-1] == path:
-                print(p[:-1])
                 return False
         return True
 
