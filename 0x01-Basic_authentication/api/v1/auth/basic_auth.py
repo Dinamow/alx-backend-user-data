@@ -14,4 +14,4 @@ class BasicAuth(Auth):
             not self.authorization_header(request).startswith('Basic ') or\
                 not isinstance(self.authorization_header(request), str):
             return None
-        return base64.b64encode(self.authorization_header(request)[6:].encode()).decode()
+        return self.authorization_header(request)[6:]
