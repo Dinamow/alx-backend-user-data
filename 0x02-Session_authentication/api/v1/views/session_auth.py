@@ -11,11 +11,7 @@ from os import getenv
 def auth_session() -> str:
     """ POST /auth_session/login
     """
-    try:
-        email = request.form.get("email")
-    except Exception:
-        return jsonify({"error": "no user found for this email"}), 404
-
+    email = request.form.get("email")
     password = request.form.get("password")
 
     if email is None or email == "":
