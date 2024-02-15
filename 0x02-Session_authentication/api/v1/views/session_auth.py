@@ -2,8 +2,9 @@
 """ Module of Session authentication views
 """
 from api.v1.views import app_views
-from flask import jsonify, request, abort
+from flask import jsonify, request
 from models.user import User
+from os import getenv
 
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
@@ -26,6 +27,8 @@ def auth_session() -> str:
         if user.is_valid_password(password):
             session_id = auth.create_session(user.id)
             response = jsonify(user.to_json())
-            response.set_cookie('session_id', session_id)
+            SESSION_NAME = getenv('SESSION_NAME')
+            response.set_cookie(SESSION_NAME, session_id)
+            
             return response
     return jsonify({"error": "wrong password"}), 401
