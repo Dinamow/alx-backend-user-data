@@ -43,4 +43,5 @@ class SessionAuth(Auth):
                     self.session_cookie(request)):
             return False
         
-
+        session_id = self.session_cookie(request)
+        del self.user_id_by_session_id[session_id]
