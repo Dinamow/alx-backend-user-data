@@ -11,7 +11,11 @@ from os import getenv
 def auth_session() -> str:
     """ POST /auth_session/login
     """
-    email = request.form.get("email")
+    try:
+        email = request.form.get("email")
+    except Exception:
+        return jsonify({"error": "no user found for this email"}), 404
+
     password = request.form.get("password")
 
     if email is None or email == "":
@@ -19,16 +23,15 @@ def auth_session() -> str:
     if password is None or password == "":
         return jsonify({"error": "password missing"}), 400
 
-    if not User.search({'email': email}):
+    user = User.search({'email': email})[0]
+    if not user:
         return jsonify({"error": "no user found for this email"}), 404
 
-    for user in User.search({'email': email}):
-        from api.v1.app import auth
-        if user.is_valid_password(password):
-            session_id = auth.create_session(user.id)
-            response = jsonify(user.to_json())
-            SESSION_NAME = getenv('SESSION_NAME')
-            response.set_cookie(SESSION_NAME, session_id)
-            
-            return response
+    from api.v1.app import auth
+    if user.is_valid_password(password):
+        session_id = auth.create_session(user.id)
+        response = jsonify(user.to_json())
+        SESSION_NAME = getenv('SESSION_NAME')
+        response.set_cookie(SESSION_NAME, session_id)
+        return response
     return jsonify({"error": "wrong password"}), 401
