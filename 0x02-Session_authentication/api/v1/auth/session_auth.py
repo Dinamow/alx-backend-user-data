@@ -42,6 +42,10 @@ class SessionAuth(Auth):
                 not self.user_id_for_session_id(
                     self.session_cookie(request)):
             return False
-        
+
         session_id = self.session_cookie(request)
-        del self.user_id_by_session_id[session_id]
+        try:
+            del self.user_id_by_session_id[session_id]
+        except Exception:
+            pass
+        return True
