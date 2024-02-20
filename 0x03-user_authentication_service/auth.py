@@ -6,6 +6,7 @@ from bcrypt import hashpw, gensalt, checkpw
 from db import DB
 from user import User
 from sqlalchemy.orm.exc import NoResultFound
+from uuid import uuid4
 
 
 def _hash_password(password: str) -> bytes:
@@ -32,7 +33,7 @@ class Auth:
             raise ValueError("User {} already exists".format(email))
         except NoResultFound:
             return self._db.add_user(email, _hash_password(password))
-    
+
     def valid_login(self, email: str, password: str) -> bool:
         """Validate user credentials
         """
@@ -41,3 +42,8 @@ class Auth:
             return checkpw(password.encode(), user.hashed_password)
         except NoResultFound:
             return False
+
+    def _generate_uuid(self) -> str:
+        """Generate a new UUID
+        """
+        return str(uuid4())
