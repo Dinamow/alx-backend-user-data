@@ -7,8 +7,10 @@ from db import DB
 from user import User
 from sqlalchemy.orm.exc import NoResultFound
 
+
 def _hash_password(password: str) -> bytes:
-    """Takes in a password string arguments and returns a salted, hashed password
+    """
+    Takes in a password string arguments and returns a salted, hashed password
     """
     return hashpw(password.encode(), gensalt())
 
