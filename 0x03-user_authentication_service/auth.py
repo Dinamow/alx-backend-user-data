@@ -47,7 +47,7 @@ class Auth:
         """Generate a new UUID
         """
         return str(uuid4())
-    
+
     def create_session(self, email: str) -> str:
         """Create a new session
         """
