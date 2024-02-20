@@ -47,3 +47,10 @@ class Auth:
         """Generate a new UUID
         """
         return str(uuid4())
+    
+    def create_session(self, email: str) -> str:
+        """Create a new session
+        """
+        session_id = self._generate_uuid()
+        self._db.update_user(email, session_id=session_id)
+        return session_id
