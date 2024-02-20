@@ -15,10 +15,11 @@ def _hash_password(password: str) -> bytes:
     """
     return hashpw(password.encode(), gensalt())
 
+
 def _generate_uuid() -> str:
-        """Generate a new UUID
-        """
-        return str(uuid4())
+    """Generate a new UUID
+    """
+    return str(uuid4())
 
 
 class Auth:
@@ -51,6 +52,10 @@ class Auth:
     def create_session(self, email: str) -> str:
         """Create a new session
         """
-        session_id = _generate_uuid()
-        self._db.update_user(email, session_id=session_id)
+        try:
+            usr_id = self._db.find_user_by(email=email).id
+            session_id = _generate_uuid()
+            self._db.update_user(user_id=usr_id, session_id=session_id)
+        except Exception:
+            session_id = None
         return session_id
