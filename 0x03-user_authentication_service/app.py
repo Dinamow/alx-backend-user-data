@@ -27,7 +27,7 @@ def users() -> str:
 
     try:
         user = AUTH.register_user(email, password)
-        return jsonify({"email": email, "message": "user created"})
+        return jsonify({"email": user.email, "message": "user created"})
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
 
@@ -36,9 +36,11 @@ def users() -> str:
 def login():
     """the login route
     """
-    if AUTH.valid_login(request.form.get('email'), request.form.get('password')):
+    if AUTH.valid_login(request.form.get('email'),
+                        request.form.get('password')):
         session_id = AUTH.create_session(request.form.get('email'))
-        response = jsonify({"email": request.form.get('email'), "message": "logged in"})
+        response = jsonify({"email": request.form.get('email'),
+                            "message": "logged in"})
         response.set_cookie("session_id", session_id)
         return response
     else:
